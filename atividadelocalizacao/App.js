@@ -9,16 +9,16 @@ const Stack = createNativeStackNavigator();
 
 const questionsData = {
   "Brasil": [
-    { question: "Qual a capital do Brasil?", answer: "Brasília" },
-    { question: "Quantos estados o Brasil tem?", answer: "26" },
-    { question: "Qual é a moeda do Brasil?", answer: "Real" }
+    { question: "Qual a capital do Brazil?", answer: "Brasília" },
+    { question: "Quantos estados o Brazil tem?", answer: "26" },
+    { question: "Qual é a moeda do Brazil?", answer: "Real" }
   ],
-  "EUA": [
+  "United States": [
     { question: "Qual a capital dos EUA?", answer: "Washington, D.C." },
     { question: "Quantos estados existem?", answer: "50" },
     { question: "Qual é a moeda dos EUA?", answer: "Dólar" }
   ],
-  "Itália": [
+  "Italia": [
     { question: "Qual é a capital da Itália?", answer: "Roma" },
     { question: "Qual é a língua oficial da Itália?", answer: "Italiano" },
     { question: "Em que ano a Itália foi unificada?", answer: "1861" }
@@ -51,7 +51,14 @@ function HomeScreen({ navigation }) {
 
     const fetchCountry = async (lat, lon) => {
       const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
-      const response = await axios.get(url);
+      console.log(url);
+      const response = await axios.get(url,{
+        headers:{
+          'User-Agent': 'local/1.0'
+        }
+      } )
+
+      console.log(response.data);
       const address = response.data.address;
       return address?.country || null;
     };
@@ -66,15 +73,17 @@ function HomeScreen({ navigation }) {
       <Text>Latitude: {latitude === 0 ? "..." : latitude}</Text>
       <Text>País: {country === null ? "..." : country}</Text>
       {country && questionsData[country] ? (
-        <Button
+        
+        <Button 
           title="Ver Perguntas"
           onPress={() => {
             console.log("Navegando para perguntas com país:", country); 
             navigation.navigate('Questions', { country });
           }}
         />
+        
       ) : (
-        <Text>Não há perguntas disponíveis para este país.</Text>
+        <Text>Não tem pergunta pra esse país.</Text>
       )}
     </View>
   );
@@ -154,7 +163,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     padding: 20,
-    backgroundColor: '#f0f8ff',
+    
+    backgroundColor: '#white',
   },
   scrollContainer: {
     flexGrow: 1,
